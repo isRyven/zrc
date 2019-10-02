@@ -1,4 +1,4 @@
-# CMakeZRC - A Standalone CMake-Based C Resource Compiler
+## CMakeZRC - A Standalone CMake-Based C Resource Compiler
 
 CMakeZRC is a resource compiler provided in a single CMake script that can easily
 be included in another project, inspired by the original project https://github.com/vector-of-bool/cmrc.
@@ -6,7 +6,7 @@ be included in another project, inspired by the original project https://github.
 CMakeZRC is made for the C language, and uses `zip` to compress and uncompress resources.  
 No dependencies. Single CMake script. Easy to use.
 
-# Usage
+## Usage
 
 ```cmake
 	# include cmake script into your project
@@ -62,9 +62,9 @@ int main(int argc, const char **argv)
 }
 ```
 
-# Acknowledgment
+## Acknowledgment
 
-## CMakeRC
+### CMakeRC
 
 ```
 MIT License
@@ -90,7 +90,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-## nozip
+### nozip
 
 ```
 MIT License
