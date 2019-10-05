@@ -44,7 +44,7 @@ if(__ZRC_GENERATE_MODE)
         const unsigned int __zrc_cache_@zrc_lib_id@_length = @pak_size@; 
     ]] code)
     file(WRITE "${__ZRC_OUTPUT}" "${code}")
-	return()
+    return()
 endif()
 
 set(__version 0.0.1)
@@ -1005,22 +1005,23 @@ if(EXISTS "${__zrc_base_path}")
         set(__generate 0)
     endif()
 endif()
+
 file(GENERATE OUTPUT "${__zrc_base_path}" CONTENT "${__ZRC_BASE_CONTENTS}" CONDITION ${__generate})
 
 function(zrc_add_resource_library name)
-	set(options "")
-	set(args WORKING_DIR)
-	set(list_args "")
+    set(options "")
+    set(args WORKING_DIR)
+    set(list_args "")
     cmake_parse_arguments(
-    	PARSE_ARGV 1
-		arg
-		"${options}" "${args}" "${list_args}")
+        PARSE_ARGV 1
+        arg
+        "${options}" "${args}" "${list_args}")
     if (NOT arg_WORKING_DIR)
-    	set(arg_WORKING_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+        set(arg_WORKING_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
     endif()
     
-	set(zrc_cache_root "${__zrc_common_dir}/__cache_${name}")
-	set(zrc_cache_list "${zrc_cache_root}/rc.txt")
+    set(zrc_cache_root "${__zrc_common_dir}/__cache_${name}")
+    set(zrc_cache_list "${zrc_cache_root}/rc.txt")
     set(zrc_cache_out "${zrc_cache_root}/rc.c")
     set(zrc_cache_pak "${zrc_cache_root}/rc.pak")
     set(zrc_cache_store "${zrc_cache_root}/store")
@@ -1029,10 +1030,20 @@ function(zrc_add_resource_library name)
     target_link_libraries("${name}" PUBLIC __zrc_h)
 
     set_property(TARGET "${name}" PROPERTY RES_NAME "${name}")
-	set_property(TARGET "${name}" PROPERTY RES_CACHE_ROOT "${zrc_cache_root}")
+    set_property(TARGET "${name}" PROPERTY RES_CACHE_ROOT "${zrc_cache_root}")
     set_property(TARGET "${name}" PROPERTY RES_LIST "${zrc_cache_list}")
 
-	add_custom_command(
+    add_custom_command(
+        OUTPUT "${__zrc_base_path}" 
+        COMMAND ${CMAKE_COMMAND} -E touch "${__zrc_base_path}"
+    )
+
+    add_custom_command(
+        OUTPUT "${__zrc_h_path}" 
+        COMMAND ${CMAKE_COMMAND} -E touch "${__zrc_h_path}"
+    )
+    
+    add_custom_command(
         OUTPUT "${zrc_cache_out}"
         DEPENDS "${zrc_cache_list}" "${__ZRC_SCRIPT}"
         COMMAND
@@ -1051,27 +1062,27 @@ function(zrc_add_resource_library name)
     file(WRITE "${zrc_cache_list}" "ZRC\n")
 
     zrc_add_resources("${name}"
-    	WORKING_DIR "${arg_WORKING_DIR}"
-    	${arg_UNPARSED_ARGUMENTS}
+        WORKING_DIR "${arg_WORKING_DIR}"
+        ${arg_UNPARSED_ARGUMENTS}
     )
 endfunction()
 
 function(zrc_add_resources name)
-	set(options "")
-	set(args WORKING_DIR)
-	set(list_args "")
+    set(options "")
+    set(args WORKING_DIR)
+    set(list_args "")
     cmake_parse_arguments(
-    	PARSE_ARGV 1
-		arg
-		"${options}" "${args}" "${list_args}")
+        PARSE_ARGV 1
+        arg
+        "${options}" "${args}" "${list_args}")
     if (NOT arg_WORKING_DIR)
-    	set(arg_WORKING_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+        set(arg_WORKING_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
     endif()
     get_target_property(zrc_cache_list "${name}"  RES_LIST)
-	file(APPEND "${zrc_cache_list}" "${arg_WORKING_DIR};")
-   	foreach(resource IN LISTS arg_UNPARSED_ARGUMENTS)
-   		message(STATUS "[${name}] add resource ${resource}")
-   		file(APPEND "${zrc_cache_list}" "${resource};")
-	endforeach()
-	file(APPEND "${zrc_cache_list}" "\n")
+    file(APPEND "${zrc_cache_list}" "${arg_WORKING_DIR};")
+    foreach(resource IN LISTS arg_UNPARSED_ARGUMENTS)
+        message(STATUS "[${name}] add resource ${resource}")
+        file(APPEND "${zrc_cache_list}" "${resource};")
+    endforeach()
+    file(APPEND "${zrc_cache_list}" "\n")
 endfunction()
