@@ -37,6 +37,17 @@ if(__ZRC_GENERATE_MODE)
     string(REGEX REPLACE "(..)(..)(..)(..)(..)" "0x\\1,0x\\2,0x\\3,0x\\4,0x\\5," hex_codes "${pak_bytes}")
     string(LENGTH "${pak_bytes}" n_bytes2)
     math(EXPR pak_size "${n_bytes2} / 2")
+    math(EXPR remainder "${pak_size} % 5")
+    set(cleanup_re "$")
+    set(cleanup_sub )
+    while(remainder)
+        set(cleanup_re "(..)${cleanup_re}")
+        set(cleanup_sub "0x\\${remainder},${cleanup_sub}")
+        math(EXPR remainder "${remainder} - 1")
+    endwhile()
+    if(NOT cleanup_re STREQUAL "$")
+        string(REGEX REPLACE "${cleanup_re}" "${cleanup_sub}" hex_codes "${hex_codes}")
+    endif()
     string(CONFIGURE [[
         const unsigned char __zrc_cache_@zrc_lib_id@[] = {
             @hex_codes@
